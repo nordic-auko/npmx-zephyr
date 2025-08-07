@@ -48,6 +48,7 @@ jobs:
       image: ghcr.io/nrfconnect/sdk-nrf-toolchain:${{ needs.determine_ncs_version.outputs.NCS_REVISION }}
       env:
         ACCEPT_JLINK_LICENSE: 0 # Don't need J-Link
+        NCS_REVISION: ${{needs.determine_ncs_version.outputs.NCS_REVISION}}
     defaults:
       run:
         shell: bash  # It is required to set `bash` as default shell
@@ -57,8 +58,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        env:
-          NCS_REVISION: ${{needs.determine_ncs_version.outputs.NCS_REVISION}}
         # The toolchain should be installed already, but it might be under a sha instead of tag.
         # The install operation will check this.
         run: |
@@ -69,8 +68,6 @@ jobs:
           nrfutil sdk-manager toolchain launch --ncs-version $NCS_REVISION -- west update;
 
       - name: Build samples
-        env:
-          NCS_REVISION: ${{needs.determine_ncs_version.outputs.NCS_REVISION}}
         run: |
           for sample in $PWD/samples/*
           do
